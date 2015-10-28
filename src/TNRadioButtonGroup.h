@@ -20,6 +20,8 @@ typedef enum : NSUInteger {
 
 @interface TNRadioButtonGroup : UIView <TNRadioButtonDelegate>
 
+@property (nonatomic, strong) NSArray *radioButtonData;
+
 @property (nonatomic, copy) NSString *identifier;
 @property (nonatomic) CGPoint position;
 @property (nonatomic) NSInteger marginBetweenItems;

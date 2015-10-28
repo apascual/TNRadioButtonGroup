@@ -35,7 +35,7 @@
 }
 
 - (void)update {
-	[self updateLabel];
+    [self updateLabel];
 }
 
 - (void)updateLabel {
@@ -45,27 +45,41 @@
     self.lblLabel.font = self.data.labelFont;
     self.lblLabel.textColor = self.data.selected?self.data.labelActiveColor:self.data.labelPassiveColor;
     self.lblLabel.text = self.data.labelText;
+    
+    self.priceLabel.backgroundColor = [UIColor clearColor];
+    self.priceLabel.numberOfLines = 0;
+    self.priceLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.priceLabel.font = self.data.labelFont;
+    self.priceLabel.textColor = self.data.selected?self.data.labelActiveColor:self.data.labelPassiveColor;
+    self.priceLabel.text = self.data.priceText;
 }
 
 - (void)createRadioButton {}
 
 - (void)createLabel {
     
+    // Temporary solution
+    CGFloat realWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat maxWidth = realWidth - self.radioButton.frame.size.width - 15.0f - 80.0f - 45.0f;
     CGSize labelSize;
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-        labelSize = [self.data.labelText sizeWithFont:self.data.labelFont forWidth:150 lineBreakMode:NSLineBreakByWordWrapping];
+        labelSize = [self.data.labelText sizeWithFont:self.data.labelFont forWidth:maxWidth lineBreakMode:NSLineBreakByWordWrapping];
         
     } else {
-        CGRect labelRect = [self.data.labelText boundingRectWithSize:CGSizeMake(150, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.data.labelFont} context:nil];
+        CGRect labelRect = [self.data.labelText boundingRectWithSize:CGSizeMake(maxWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.data.labelFont} context:nil];
         
         labelSize = CGSizeMake(labelRect.size.width, labelRect.size.height);
         
     }
-
+    
     self.lblLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.radioButton.frame.origin.x + self.radioButton.frame.size.width + 15, (self.radioButton.frame.size.height - labelSize.height) / 2, labelSize.width, labelSize.height)];
-	[self updateLabel];
+    
+    self.priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(realWidth - 120, (self.radioButton.frame.size.height - labelSize.height) / 2, 40, labelSize.height)];
+    
+    [self updateLabel];
     [self addSubview:self.lblLabel];
+    [self addSubview:self.priceLabel];
 }
 
 - (void)createHiddenButton {

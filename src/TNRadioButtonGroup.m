@@ -12,7 +12,6 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
 
 @interface TNRadioButtonGroup()
 
-@property (nonatomic, strong) NSArray *radioButtonData;
 @property (nonatomic) TNRadioButtonGroupLayout layout;
 @property (nonatomic) NSInteger widthOfComponent;
 @property (nonatomic) NSInteger heightOfComponent;
@@ -22,6 +21,20 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
 @implementation TNRadioButtonGroup
 
 #pragma mark - Initializers
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    
+    if (self) {
+        self.layout = TNRadioButtonGroupLayoutVertical;
+        self.marginBetweenItems = 15;
+        self.itemsInsets = UIEdgeInsetsZero;
+        self.multipleOptions = NO;
+    }
+    
+    return self;
+}
+
 - (instancetype)initWithRadioButtonData:(NSArray *)radioButtonData layout:(TNRadioButtonGroupLayout)layout {
     
     self = [super init];
@@ -30,7 +43,7 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
         self.radioButtonData = radioButtonData;
         self.layout = layout;
         self.marginBetweenItems = 15;
-		self.itemsInsets = UIEdgeInsetsZero;
+        self.itemsInsets = UIEdgeInsetsZero;
         self.multipleOptions = NO;
     }
     
@@ -44,10 +57,10 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
     self.frame = CGRectMake(0, 0, self.widthOfComponent, self.heightOfComponent);
 }
 
- -(void)update {
-	for (TNRadioButton *radioButton in self.radioButtons) {
-		[radioButton update];
-	}
+-(void)update {
+    for (TNRadioButton *radioButton in self.radioButtons) {
+        [radioButton update];
+    }
 }
 
 - (void)createRadioButtons {
@@ -56,6 +69,11 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
     int yPos = _itemsInsets.top;
     int maxHeight = 0;
     int i = 0;
+    
+    for (TNRadioButton *radioButton in self.radioButtons) {
+        [radioButton removeFromSuperview];
+    }
+    self.radioButtons = nil;
     
     NSMutableArray *tmp = [NSMutableArray new];
     
@@ -94,7 +112,7 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
         
         radioButton.delegate = self;
         radioButton.multipleOptions = self.multipleOptions;
-
+        
         CGRect frame;
         
         if( self.layout == TNRadioButtonGroupLayoutHorizontal ){
@@ -135,7 +153,7 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
         if( rb != radioButton && !self.multipleOptions){
             rb.data.selected = !radioButton.data.selected;
         }
-
+        
         [rb selectWithAnimation:YES];
     }
     

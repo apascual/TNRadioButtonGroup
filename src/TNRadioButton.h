@@ -21,10 +21,12 @@
 
 @property (nonatomic, copy) NSString *identifier;
 @property (nonatomic, copy) NSString *label;
+@property (nonatomic, copy) NSString *price;
 @property (nonatomic, strong) TNRadioButtonData *data;
 
 @property (nonatomic, strong) UIView *radioButton;
 @property (nonatomic, strong) UILabel *lblLabel;
+@property (nonatomic, strong) UILabel *priceLabel;
 @property (nonatomic, strong) UIButton *btnHidden;
 
 @property (nonatomic, weak) id<TNRadioButtonDelegate> delegate;
