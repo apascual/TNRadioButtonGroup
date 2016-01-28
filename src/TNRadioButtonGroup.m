@@ -130,9 +130,9 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
             maxHeight = yPos;
         }
         
-        if( data.selected ){
-            self.selectedRadioButton = radioButton;
-        }
+        //        if( data.selected ){
+        //            self.selectedRadioButton = radioButton;
+        //        }
         
         [tmp addObject:radioButton];
         i++;
@@ -155,11 +155,21 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
     
     for (TNRadioButton *rb in self.radioButtons) {
         
-        if( rb != radioButton && !self.multipleOptions){
-            rb.data.selected = !radioButton.data.selected;
+        if(self.multipleOptions) {
+            // In multiple-selection-mode
+            if(rb == radioButton) {
+                [rb selectWithAnimation:YES];
+            }
+        } else {
+            // In single-selection-mode remove all other selections
+            if(rb == radioButton) {
+                rb.data.selected = YES;
+                [rb selectWithAnimation:YES];
+            } else {
+                rb.data.selected = NO;
+                [rb selectWithAnimation:YES];
+            }
         }
-        
-        [rb selectWithAnimation:YES];
     }
     
     self.selectedRadioButton = radioButton;
@@ -168,7 +178,7 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
 #pragma mark - Getters / Setters
 - (void)setSelectedRadioButton:(TNRadioButton *)selectedRadioButton {
     
-    if( _selectedRadioButton != selectedRadioButton ){
+    if( _selectedRadioButton != selectedRadioButton || self.multipleOptions) {
         _selectedRadioButton = selectedRadioButton;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:SELECTED_RADIO_BUTTON_CHANGED object:self];
