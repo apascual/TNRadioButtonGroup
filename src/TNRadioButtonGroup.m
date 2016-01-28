@@ -162,7 +162,7 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
 
 - (BOOL)radioButtonCanChange:(TNRadioButton *)radioButton {
     NSInteger itemsSelected = [self numberOfSelectedOptions];
-    if (self.multipleOptions && itemsSelected + 1 > self.maxSelection) {
+    if (self.multipleOptions && self.maxSelection > 0 && itemsSelected + 1 > self.maxSelection) {
         if (self.maxSelectionBlock != nil) {
             self.maxSelectionBlock();
         }
