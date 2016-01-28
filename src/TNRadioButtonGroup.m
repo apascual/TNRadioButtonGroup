@@ -29,7 +29,6 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
         self.layout = TNRadioButtonGroupLayoutVertical;
         self.marginBetweenItems = 15;
         self.itemsInsets = UIEdgeInsetsZero;
-        self.multipleOptions = NO;
     }
     
     return self;
@@ -44,7 +43,6 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
         self.layout = layout;
         self.marginBetweenItems = 15;
         self.itemsInsets = UIEdgeInsetsZero;
-        self.multipleOptions = NO;
     }
     
     return self;
@@ -143,6 +141,13 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
     self.widthOfComponent = xPos;
     self.heightOfComponent = maxHeight;
     self.radioButtons = [NSArray arrayWithArray:tmp];
+}
+
+- (void)setMultipleOptions:(BOOL)multipleOptions {
+    _multipleOptions = multipleOptions;
+    for (TNRadioButton *button in self.radioButtons) {
+        button.multipleOptions = multipleOptions;
+    }
 }
 
 #pragma mark - TNRadioButtonDelegate methods
