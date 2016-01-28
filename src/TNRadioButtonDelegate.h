@@ -14,6 +14,7 @@
 
 @required
 - (void)radioButtonDidChange:(TNRadioButton *)radioButton;
+- (BOOL)radioButtonCanChange:(TNRadioButton *)radioButton;
 
 @optional
 

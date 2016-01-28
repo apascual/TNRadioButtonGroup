@@ -150,9 +150,29 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
     }
 }
 
+- (NSInteger)numberOfSelectedOptions {
+    NSInteger selected = 0;
+    for (TNRadioButton *rb in self.radioButtons) {
+        if(rb.data.selected) {
+            selected++;
+        }
+    }
+    return selected;
+}
+
+- (BOOL)radioButtonCanChange:(TNRadioButton *)radioButton {
+    NSInteger itemsSelected = [self numberOfSelectedOptions];
+    if (self.multipleOptions && itemsSelected + 1 > self.maxSelection) {
+        if (self.maxSelectionBlock != nil) {
+            self.maxSelectionBlock();
+        }
+        return NO;
+    }
+    return YES;
+}
+
 #pragma mark - TNRadioButtonDelegate methods
 - (void)radioButtonDidChange:(TNRadioButton *)radioButton {
-    
     for (TNRadioButton *rb in self.radioButtons) {
         
         if(self.multipleOptions) {

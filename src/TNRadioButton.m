@@ -96,12 +96,19 @@
 - (void)buttonTapped:(id)sender {
     
     if( !self.data.selected || self.multipleOptions ){
-        self.data.selected = !self.data.selected;
         
-        if ([self.delegate respondsToSelector:@selector(radioButtonDidChange:)]) {
-            [self.delegate radioButtonDidChange:self];
+        BOOL canChange = YES;
+        if(!self.data.selected && [self.delegate respondsToSelector:@selector(radioButtonCanChange:)]) {
+            canChange = [self.delegate radioButtonCanChange:self];
         }
         
+        if(canChange) {
+            self.data.selected = !self.data.selected;
+            
+            if ([self.delegate respondsToSelector:@selector(radioButtonDidChange:)]) {
+                [self.delegate radioButtonDidChange:self];
+            }
+        }
     }
 }
 

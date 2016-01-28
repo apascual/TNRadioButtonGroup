@@ -18,6 +18,8 @@ typedef enum : NSUInteger {
     TNRadioButtonGroupLayoutVertical
 } TNRadioButtonGroupLayout;
 
+//typedef void (^maxSelectionBlock)();
+
 @interface TNRadioButtonGroup : UIView <TNRadioButtonDelegate>
 
 @property (nonatomic, strong) NSArray *radioButtonData;
@@ -39,6 +41,8 @@ typedef enum : NSUInteger {
 @property (nonatomic, weak) TNRadioButton *selectedRadioButton;
 
 @property (nonatomic, assign) BOOL multipleOptions;
+@property (nonatomic) NSInteger maxSelection;
+@property (nonatomic, copy) void (^maxSelectionBlock)(void);
 
 - (instancetype)initWithRadioButtonData:(NSArray *)radioButtonData layout:(TNRadioButtonGroupLayout)layout;
 - (void)create;
