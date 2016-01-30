@@ -44,7 +44,8 @@
 - (void)update {
 	[super update];
 
-    self.radioButton.frame = CGRectMake(0, 0, self.data.borderWidth, self.data.borderHeight);
+    CGFloat yPos = MAX(0, (self.lblLabel.frame.size.height-self.radioButton.frame.size.height)/2);
+    self.radioButton.frame = CGRectMake(0, yPos, self.data.borderWidth, self.data.borderHeight);
 
 	[self updateBorder];
 	[self updateRectangle];

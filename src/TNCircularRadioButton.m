@@ -44,7 +44,8 @@
 - (void)update {
 	[super update];
 
-    self.radioButton.frame = CGRectMake(0, 0, self.data.borderRadius, self.data.borderRadius);
+    CGFloat yPos = MAX(0, (self.lblLabel.frame.size.height-self.radioButton.frame.size.height)/2);
+    self.radioButton.frame = CGRectMake(0, yPos, self.data.borderRadius, self.data.borderRadius);
 
 	[self updateBorder];
 	[self updateCircle];

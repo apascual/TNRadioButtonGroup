@@ -73,9 +73,11 @@
         
     }
     
-    self.lblLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.radioButton.frame.origin.x + self.radioButton.frame.size.width + 15, (self.radioButton.frame.size.height - labelSize.height) / 2, labelSize.width, labelSize.height)];
+    CGFloat yPos = MAX(0, (self.radioButton.frame.size.height - labelSize.height) / 2);
     
-    self.priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(realWidth - 120, (self.radioButton.frame.size.height - labelSize.height) / 2, 40, labelSize.height)];
+    self.lblLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.radioButton.frame.origin.x + self.radioButton.frame.size.width + 15, yPos, labelSize.width, labelSize.height)];
+    
+    self.priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(realWidth - 120, yPos, 40, labelSize.height)];
     
     [self updateLabel];
     [self addSubview:self.lblLabel];
