@@ -37,7 +37,7 @@
     
     [self addSubview:self.lblLabel];
     
-    [self.lblLabel autoPinEdge:NSLayoutAttributeLeft toEdge:NSLayoutAttributeRight ofView:self.radioButton withOffset:8.0f];
+    [self.lblLabel autoPinEdge:NSLayoutAttributeLeft toEdge:NSLayoutAttributeRight ofView:self.radioButton withOffset:16.0f];
     [self.lblLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeTop];
     [self.lblLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeBottom];
     
@@ -60,13 +60,9 @@
     else {
         [self.lblLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeRight];
     }
-    
-    self.btnHidden = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.btnHidden addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
 
-    [self addSubview:self.btnHidden];
-    
-    [self.btnHidden autoPinEdgesToSuperviewEdges];
+    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(buttonTapped:)];
+    [self addGestureRecognizer:tapRecognizer];
 }
 
 
