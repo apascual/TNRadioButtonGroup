@@ -110,7 +110,7 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
         [radioButton autoPinEdgeToSuperviewEdge:NSLayoutAttributeRight];
     }
     
-    [tmp autoDistributeViewsAlongAxis:NSLayoutAttributeCenterX alignedTo:ALEdgeLeading withFixedSpacing:16.0f insetSpacing:YES matchedSizes:NO];
+    [tmp autoDistributeViewsAlongAxis:NSLayoutAttributeCenterX alignedTo:ALEdgeLeading withFixedSpacing:16.0f insetSpacing:NO matchedSizes:NO];
     
     self.radioButtons = [NSArray arrayWithArray:tmp];
 }
