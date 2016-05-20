@@ -7,6 +7,7 @@
 //
 
 #import "TNRadioButton.h"
+#import <PureLayout/PureLayout.h>
 
 @interface TNRadioButton()
 
@@ -15,7 +16,7 @@
 @implementation TNRadioButton
 
 - (instancetype)initWithData:(TNRadioButtonData *)data {
-    
+
     self = [super init];
     
     if (self) {
@@ -26,19 +27,7 @@
 }
 
 - (void)setup {
-    
-    [self createLabel];
-    [self createHiddenButton];
-    
-    [self selectWithAnimation:NO];
-    self.frame = self.btnHidden.frame;
-}
-
-- (void)update {
-    [self updateLabel];
-}
-
-- (void)updateLabel {
+    self.lblLabel = [UILabel newAutoLayoutView];
     self.lblLabel.backgroundColor = [UIColor clearColor];
     self.lblLabel.numberOfLines = 0;
     self.lblLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -46,56 +35,40 @@
     self.lblLabel.textColor = self.data.selected?self.data.labelActiveColor:self.data.labelPassiveColor;
     self.lblLabel.text = self.data.labelText;
     
-    self.priceLabel.backgroundColor = [UIColor clearColor];
-    self.priceLabel.numberOfLines = 0;
-    self.priceLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    self.priceLabel.font = self.data.labelFont;
-    self.priceLabel.textColor = self.data.selected?self.data.labelActiveColor:self.data.labelPassiveColor;
-    self.priceLabel.text = self.data.priceText;
-}
-
-- (void)createRadioButton {}
-
-- (void)createLabel {
+    [self addSubview:self.lblLabel];
     
-    // Temporary solution
-    CGFloat realWidth = [UIScreen mainScreen].bounds.size.width;
-    CGFloat maxWidth = realWidth - self.radioButton.frame.size.width - 15.0f - 80.0f - 45.0f;
-    CGSize labelSize;
+    [self.lblLabel autoPinEdge:NSLayoutAttributeLeft toEdge:NSLayoutAttributeRight ofView:self.radioButton withOffset:8.0f];
+    [self.lblLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeTop];
+    [self.lblLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeBottom];
     
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-        labelSize = [self.data.labelText sizeWithFont:self.data.labelFont forWidth:maxWidth lineBreakMode:NSLineBreakByWordWrapping];
+    if(self.data.priceText != nil) {
+        self.priceLabel = [UILabel newAutoLayoutView];
+        self.priceLabel.backgroundColor = [UIColor clearColor];
+        self.priceLabel.numberOfLines = 1;
+        self.priceLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        self.priceLabel.font = self.data.labelFont;
+        self.priceLabel.text = self.data.priceText;
         
-    } else {
-        CGRect labelRect = [self.data.labelText boundingRectWithSize:CGSizeMake(maxWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.data.labelFont} context:nil];
+        [self addSubview:self.priceLabel];
         
-        labelSize = CGSizeMake(labelRect.size.width, labelRect.size.height);
-        
+        [self.priceLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeRight];
+        [self.priceLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeTop];
+        [self.priceLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeBottom];
+        [self.priceLabel autoSetDimension:NSLayoutAttributeWidth toSize:40.0f];
+        [self.lblLabel autoPinEdge:NSLayoutAttributeRight toEdge:NSLayoutAttributeLeft ofView:self.priceLabel withOffset:-8.0f];
+    }
+    else {
+        [self.lblLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeRight];
     }
     
-    CGFloat yPos = MAX(0, (self.radioButton.frame.size.height - labelSize.height) / 2);
-    
-    self.lblLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.radioButton.frame.origin.x + self.radioButton.frame.size.width + 15, yPos, labelSize.width, labelSize.height)];
-    
-    self.priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(realWidth - 120, yPos, 40, labelSize.height)];
-    
-    [self updateLabel];
-    [self addSubview:self.lblLabel];
-    [self addSubview:self.priceLabel];
-}
-
-- (void)createHiddenButton {
-    
-    int height = MAX(self.lblLabel.frame.size.height, self.radioButton.frame.size.height);
-    
     self.btnHidden = [UIButton buttonWithType:UIButtonTypeCustom];
-    CGFloat width = self.priceLabel.frame.origin.x + self.priceLabel.frame.size.width;
+    [self.btnHidden addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
 
-    self.btnHidden.frame = CGRectMake(0, 0, width, height);
     [self addSubview:self.btnHidden];
     
-    [self.btnHidden addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnHidden autoPinEdgesToSuperviewEdges];
 }
+
 
 - (void)buttonTapped:(id)sender {
     
@@ -116,9 +89,13 @@
     }
 }
 
+- (void)update {
+    self.lblLabel.textColor = self.data.selected?self.data.labelActiveColor:self.data.labelPassiveColor;
+}
+
 #pragma mark - Animations
 - (void)selectWithAnimation:(BOOL)animated {
-    [self updateLabel];
+    [self update];
 }
 
 @end

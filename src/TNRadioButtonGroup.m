@@ -7,6 +7,7 @@
 //
 
 #import "TNRadioButtonGroup.h"
+#import <PureLayout/PureLayout.h>
 
 NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
 
@@ -51,14 +52,6 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
 #pragma mark - Setup
 - (void)create {
     [self createRadioButtons];
-    
-    self.frame = CGRectMake(0, 0, self.widthOfComponent, self.heightOfComponent);
-}
-
--(void)update {
-    for (TNRadioButton *radioButton in self.radioButtons) {
-        [radioButton update];
-    }
 }
 
 - (void)createRadioButtons {
@@ -78,7 +71,6 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
     for (TNRadioButtonData *data in self.radioButtonData) {
         
         TNRadioButton *radioButton = nil;
-        
         if( !data.labelFont) data.labelFont = self.labelFont;
         if( !data.labelActiveColor) data.labelActiveColor = self.textActiveColor;
         if( !data.labelPassiveColor) data.labelPassiveColor = self.textPassiveColor;
@@ -101,45 +93,25 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
             radioButton = [[TNImageRadioButton alloc] initWithData:(TNImageRadioButtonData *)data];
         }
         
-        // If there is already a radio button selected ... deselect the current one
         if( self.selectedRadioButton ){
             data.selected = NO;
         }
         
         data.tag = i;
+        i++;
         
         radioButton.delegate = self;
         radioButton.multipleOptions = self.multipleOptions;
         
-        CGRect frame;
-        
-        if( self.layout == TNRadioButtonGroupLayoutHorizontal ){
-            frame = CGRectMake(xPos, _itemsInsets.top, radioButton.frame.size.width, radioButton.frame.size.height);
-        }else{
-            frame = CGRectMake(_itemsInsets.left, yPos, radioButton.frame.size.width, radioButton.frame.size.height);
-        }
-        
-        radioButton.frame = frame;
         [self addSubview:radioButton];
-        
-        xPos += radioButton.frame.size.width + self.marginBetweenItems;
-        yPos += radioButton.frame.size.height + self.marginBetweenItems;
-        maxHeight = MAX(maxHeight, radioButton.frame.size.height);
-        
-        if( self.layout == TNRadioButtonGroupLayoutVertical ){
-            maxHeight = yPos;
-        }
-        
-        //        if( data.selected ){
-        //            self.selectedRadioButton = radioButton;
-        //        }
-        
         [tmp addObject:radioButton];
-        i++;
+       
+        [radioButton autoPinEdgeToSuperviewMargin:NSLayoutAttributeLeft];
+        [radioButton autoPinEdgeToSuperviewMargin:NSLayoutAttributeRight];
     }
     
-    self.widthOfComponent = xPos;
-    self.heightOfComponent = maxHeight;
+    [tmp autoDistributeViewsAlongAxis:NSLayoutAttributeCenterX alignedTo:ALEdgeLeading withFixedSpacing:4.0f insetSpacing:NO matchedSizes:NO];
+    
     self.radioButtons = [NSArray arrayWithArray:tmp];
 }
 
@@ -229,6 +201,13 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
     }
     
     return  _labelFont;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    self.heightOfComponent = 500;
+    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, 300, self.heightOfComponent);
 }
 
 

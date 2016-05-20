@@ -7,6 +7,7 @@
 //
 
 #import "TNCircularRadioButton.h"
+#import <PureLayout/PureLayout.h>
 
 @interface TNCircularRadioButton()
 
@@ -34,21 +35,10 @@
 }
 
 #pragma mark - Creation
+
 - (void)setup{
-    
     [self createRadioButton];
-    
     [super setup];
-}
-
-- (void)update {
-	[super update];
-
-    CGFloat yPos = MAX(0, (self.lblLabel.frame.size.height-self.radioButton.frame.size.height)/2);
-    self.radioButton.frame = CGRectMake(0, yPos, self.data.borderRadius, self.data.borderRadius);
-
-	[self updateBorder];
-	[self updateCircle];
 }
 
 - (void)updateBorder {
@@ -65,7 +55,7 @@
 }
 
 - (void)createRadioButton {
-    self.radioButton = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.data.borderRadius, self.data.borderRadius)];
+    self.radioButton = [UIView newAutoLayoutView];
     
     UIBezierPath *borderPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, self.data.borderRadius, self.data.borderRadius)];
     
@@ -85,13 +75,22 @@
     
     [self addSubview:self.radioButton];
     
+    [self.radioButton autoSetDimensionsToSize:CGSizeMake(self.data.borderRadius, self.data.borderRadius)];
+    [self.radioButton autoPinEdgeToSuperviewEdge:NSLayoutAttributeLeft];
+    [self.radioButton autoAlignAxisToSuperviewAxis:NSLayoutAttributeCenterY];
+    [self.radioButton autoPinEdgeToSuperviewEdge:NSLayoutAttributeTop withInset:0.0f relation:NSLayoutRelationGreaterThanOrEqual];
+    [self.radioButton autoPinEdgeToSuperviewEdge:NSLayoutAttributeBottom withInset:0.0f relation:NSLayoutRelationGreaterThanOrEqual];
+
+    [self selectWithAnimation:NO];
 }
 
 #pragma mark - Animations
 - (void)selectWithAnimation:(BOOL)animated {
     [super selectWithAnimation:animated];
-    [self update];
-
+    
+    [self updateBorder];
+    [self updateCircle];
+    
     NSNumber *scaleValue = (self.data.selected) ? @1 : @0;
     
     if( animated ){

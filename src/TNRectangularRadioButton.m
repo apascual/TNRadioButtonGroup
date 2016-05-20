@@ -7,6 +7,7 @@
 //
 
 #import "TNRectangularRadioButton.h"
+#import <PureLayout/PureLayout.h>
 
 @interface TNRectangularRadioButton()
 
@@ -35,24 +36,12 @@
 
 #pragma mark - Creation
 - (void)setup{
-    
     [self createRadioButton];
-    
     [super setup];
 }
 
-- (void)update {
-	[super update];
-
-    CGFloat yPos = MAX(0, (self.lblLabel.frame.size.height-self.radioButton.frame.size.height)/2);
-    self.radioButton.frame = CGRectMake(0, yPos, self.data.borderWidth, self.data.borderHeight);
-
-	[self updateBorder];
-	[self updateRectangle];
-}
-
 - (void)updateBorder {
-   self.border.frame = CGRectMake(0, 0, self.data.borderWidth, self.data.borderHeight);
+    self.border.frame = CGRectMake(0, 0, self.data.borderWidth, self.data.borderHeight);
     self.border.lineWidth = self.data.borderLineThickness;
     self.border.strokeColor = self.data.selected?self.data.borderActiveColor.CGColor:self.data.borderPassiveColor.CGColor;
     self.border.fillColor = [UIColor clearColor].CGColor;
@@ -65,7 +54,7 @@
 }
 
 - (void)createRadioButton {
-    self.radioButton = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.data.borderWidth, self.data.borderHeight)];
+    self.radioButton = [UIView newAutoLayoutView];
     
     UIBezierPath *borderPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, self.data.borderWidth, self.data.borderHeight)];
     
@@ -73,24 +62,34 @@
     
     self.border = [CAShapeLayer layer];
     self.border.path = borderPath.CGPath;
-	[self updateBorder];
-
+    [self updateBorder];
+    
     [self.radioButton.layer addSublayer:self.border];
-
+    
     self.rectangle = [CAShapeLayer layer];
     self.rectangle.path = rectangularPath.CGPath;
-	[self updateRectangle];
-
+    [self updateRectangle];
+    
     [self.radioButton.layer addSublayer:self.rectangle];
     
     [self addSubview:self.radioButton];
+    
+    [self.radioButton autoSetDimensionsToSize:CGSizeMake(self.data.borderWidth, self.data.borderHeight)];
+    [self.radioButton autoPinEdgeToSuperviewEdge:NSLayoutAttributeLeft];
+    [self.radioButton autoAlignAxisToSuperviewAxis:NSLayoutAttributeCenterY];
+    [self.radioButton autoPinEdgeToSuperviewEdge:NSLayoutAttributeTop withInset:0.0f relation:NSLayoutRelationGreaterThanOrEqual];
+    [self.radioButton autoPinEdgeToSuperviewEdge:NSLayoutAttributeBottom withInset:0.0f relation:NSLayoutRelationGreaterThanOrEqual];
+    
+    [self selectWithAnimation:NO];
 }
 
 #pragma mark - Animations
 - (void)selectWithAnimation:(BOOL)animated {
     [super selectWithAnimation:animated];
-    [self update];
-
+    
+    [self updateBorder];
+    [self updateRectangle];
+    
     NSNumber *scaleValue = (self.data.selected) ? @1 : @0;
     
     if( animated ){
