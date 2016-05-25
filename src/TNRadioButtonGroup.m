@@ -178,12 +178,6 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
     
 }
 
-- (void)setPosition:(CGPoint)position {
-    
-    self.frame = CGRectMake(position.x, position.y, self.frame.size.width, self.frame.size.height);
-    
-}
-
 - (UIColor *)labelColor {
     
     if( !_labelColor ){
@@ -202,13 +196,5 @@ NSString *const SELECTED_RADIO_BUTTON_CHANGED = @"selectedRadioButtonChanged";
     
     return  _labelFont;
 }
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
-    self.heightOfComponent = 500;
-    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, 300, self.heightOfComponent);
-}
-
 
 @end
