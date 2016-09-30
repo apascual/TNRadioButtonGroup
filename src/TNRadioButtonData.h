@@ -16,6 +16,9 @@
 @property (nonatomic, copy) NSString *priceText;
 @property (nonatomic) BOOL selected;
 
+@property (nonatomic, assign) NSRange linkRange;
+@property (nonatomic, copy) void (^linkBlock)();
+
 @property (nonatomic, strong) UIFont *labelFont;
 @property (nonatomic, strong) UIColor *labelActiveColor;
 @property (nonatomic, strong) UIColor *labelPassiveColor;

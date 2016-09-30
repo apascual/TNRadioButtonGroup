@@ -16,7 +16,7 @@
 @implementation TNRadioButton
 
 - (instancetype)initWithData:(TNRadioButtonData *)data {
-
+    
     self = [super init];
     
     if (self) {
@@ -33,7 +33,17 @@
     self.lblLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.lblLabel.font = self.data.labelFont;
     self.lblLabel.textColor = self.data.selected?self.data.labelActiveColor:self.data.labelPassiveColor;
-    self.lblLabel.text = self.data.labelText;
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.data.labelText];
+    [attributedString addAttribute:NSUnderlineStyleAttributeName
+                             value:[NSNumber numberWithInt:1]
+                             range:self.data.linkRange];
+    
+    [attributedString addAttribute:NSFontAttributeName
+                             value:self.data.labelFont
+                             range:NSMakeRange(0, self.data.labelText.length)];
+    
+    self.lblLabel.attributedText = attributedString;
     
     [self addSubview:self.lblLabel];
     
@@ -60,14 +70,68 @@
     else {
         [self.lblLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeRight];
     }
-
+    
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(buttonTapped:)];
     [self addGestureRecognizer:tapRecognizer];
 }
 
-
-- (void)buttonTapped:(id)sender {
+- (BOOL)didTapAttributedTextInLabel:(UILabel *)label withTapGesture:(UITapGestureRecognizer *)tapGesture inRange:(NSRange)targetRange {
+    NSParameterAssert(label != nil);
     
+    CGSize labelSize = label.bounds.size;
+    // create instances of NSLayoutManager, NSTextContainer and NSTextStorage
+    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:CGSizeZero];
+    NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:label.attributedText];
+    
+    // configure layoutManager and textStorage
+    [layoutManager addTextContainer:textContainer];
+    [textStorage addLayoutManager:layoutManager];
+    
+    // configure textContainer for the label
+    textContainer.lineFragmentPadding = 0.0;
+    textContainer.lineBreakMode = label.lineBreakMode;
+    textContainer.maximumNumberOfLines = label.numberOfLines;
+    textContainer.size = labelSize;
+    
+    // find the tapped character location and compare it to the specified range
+    CGPoint locationOfTouchInLabel = [tapGesture locationInView:self];
+    locationOfTouchInLabel = [self.lblLabel convertPoint:locationOfTouchInLabel fromView:self];
+    CGRect textBoundingBox = [layoutManager usedRectForTextContainer:textContainer];
+    
+    //    CGPoint textContainerOffset = CGPointMake((labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
+    //                                              (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y);
+    //    CGPoint locationOfTouchInTextContainer = CGPointMake(locationOfTouchInLabel.x - textContainerOffset.x,
+    //                                                         locationOfTouchInLabel.y - textContainerOffset.y);
+    
+    if(locationOfTouchInLabel.x >= 0 && locationOfTouchInLabel.y >= 0 && locationOfTouchInLabel.x < textBoundingBox.size.width && locationOfTouchInLabel.y < textBoundingBox.size.height) {
+        
+        NSInteger indexOfCharacter = [layoutManager characterIndexForPoint:locationOfTouchInLabel
+                                                           inTextContainer:textContainer
+                                  fractionOfDistanceBetweenInsertionPoints:nil];
+        
+        if (NSLocationInRange(indexOfCharacter, targetRange)) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+
+- (void)buttonTapped:(UITapGestureRecognizer *)tapGesture {
+    
+    // 1st) Check if the click happened on a link
+    if(self.data.linkRange.location != NSNotFound && [self didTapAttributedTextInLabel:self.lblLabel withTapGesture:tapGesture inRange:self.data.linkRange]) {
+        
+        if(self.data.linkBlock != nil) {
+            self.data.linkBlock();
+        }
+        
+        return;
+    }
+    
+    // 2nd) Otherwise just handle normal selection
     if( !self.data.selected || self.multipleOptions ){
         
         BOOL canChange = YES;
