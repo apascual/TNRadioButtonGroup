@@ -49,16 +49,20 @@
 
 - (void)updateRectangle {
     self.rectangle.frame = CGRectMake((self.border.frame.size.width - self.data.rectangleWidth) / 2, (self.border.frame.size.height - self.data.rectangleHeight) / 2, self.data.rectangleWidth, self.data.rectangleHeight);
-    self.rectangle.lineWidth = 0;
-    self.rectangle.fillColor = self.data.selected?self.data.rectangleActiveColor.CGColor:self.data.rectanglePassiveColor.CGColor;
+    self.rectangle.lineWidth = 3.0f;
+    self.rectangle.strokeColor = self.data.selected?self.data.rectangleActiveColor.CGColor:self.data.rectanglePassiveColor.CGColor;
+    self.rectangle.fillColor = [UIColor clearColor].CGColor;
 }
 
 - (void)createRadioButton {
     self.radioButton = [UIView newAutoLayoutView];
     
-    UIBezierPath *borderPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, self.data.borderWidth, self.data.borderHeight)];
+    UIBezierPath *borderPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, self.data.borderWidth, self.data.borderHeight) cornerRadius:2.0f];
     
-    UIBezierPath *rectangularPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, self.data.rectangleWidth, self.data.rectangleHeight)];
+    UIBezierPath *rectangularPath = [[UIBezierPath alloc] init];
+    [rectangularPath moveToPoint:CGPointMake(0.0f, self.data.rectangleHeight*1/2)];
+    [rectangularPath addLineToPoint:CGPointMake(self.data.rectangleWidth*1/3, self.data.rectangleHeight*5/6)];
+    [rectangularPath addLineToPoint:CGPointMake(self.data.rectangleWidth, self.data.rectangleHeight*1/8)];
     
     self.border = [CAShapeLayer layer];
     self.border.path = borderPath.CGPath;
@@ -93,13 +97,14 @@
     NSNumber *scaleValue = (self.data.selected) ? @1 : @0;
     
     if( animated ){
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
         animation.toValue = scaleValue;
         animation.duration = 0.3f;
         
-        [self.rectangle addAnimation:animation forKey:@"scale"];
+        [self.rectangle addAnimation:animation forKey:nil];
     }
-    self.rectangle.transform = CATransform3DMakeScale(scaleValue.floatValue, scaleValue.floatValue, 0);
+    self.rectangle.strokeEnd = scaleValue.floatValue;
 }
+
 
 @end
