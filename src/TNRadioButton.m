@@ -64,7 +64,7 @@
         [self.priceLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeRight];
         [self.priceLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeTop];
         [self.priceLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeBottom];
-        [self.priceLabel autoSetDimension:NSLayoutAttributeWidth toSize:40.0f];
+        [self.priceLabel autoSetDimension:NSLayoutAttributeWidth toSize:60.0f];
         [self.lblLabel autoPinEdge:NSLayoutAttributeRight toEdge:NSLayoutAttributeLeft ofView:self.priceLabel withOffset:-8.0f];
     }
     else {
