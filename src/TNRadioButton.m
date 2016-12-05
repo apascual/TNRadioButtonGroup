@@ -56,6 +56,9 @@
         self.priceLabel.backgroundColor = [UIColor clearColor];
         self.priceLabel.numberOfLines = 1;
         self.priceLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        self.priceLabel.textAlignment = NSTextAlignmentRight;
+        self.priceLabel.adjustsFontSizeToFitWidth = YES;
+        self.priceLabel.minimumScaleFactor = 0.5f;
         self.priceLabel.font = self.data.labelFont;
         self.priceLabel.text = self.data.priceText;
         
