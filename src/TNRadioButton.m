@@ -61,7 +61,8 @@
         self.priceLabel.minimumScaleFactor = 0.5f;
         self.priceLabel.font = self.data.labelFont;
         self.priceLabel.text = self.data.priceText;
-        
+        self.priceLabel.textColor = self.data.selected?self.data.labelActiveColor:self.data.labelPassiveColor;
+
         [self addSubview:self.priceLabel];
         
         [self.priceLabel autoPinEdgeToSuperviewEdge:NSLayoutAttributeRight];
